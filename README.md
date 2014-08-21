@@ -117,13 +117,13 @@ Convert "array-like" value to a "real" array.
 
 ### util.inherit(superConstructor, prototype)
 
-Create a constructor which inherits the super constructor, and with all properties in the given prototype object mixed in.
+Create a constructor with the given `prototype` object, which inherits the prototype objec of the super constructor.
 
 	var util = require('mini-util');
 	var EventEmitter = require("events").EventEmitter;
 
 	var MyStream = util.inherit(EventEmitter, {
-		_initialize: function (body) {
+		constructor: function (body) {
 			EventEmitter.call(this);
 		},
 		write: function (data) {
@@ -134,7 +134,7 @@ Create a constructor which inherits the super constructor, and with all properti
 	var stream = new MyStream();
 
 	stream instanceof EventEmitter;      // => true
-	MyStream.superclass === EventEmitter.prototype;  // => true
+	MyStream.super === EventEmitter.prototype;  // => true
 
 	stream.on("data", function(data) {
 		console.log('Received data: "' + data + '"');
@@ -142,21 +142,40 @@ Create a constructor which inherits the super constructor, and with all properti
 
 	stream.write("It works!");           // => Received data: "It works!"
 
-Constructor can also bear a child constructor as follows.
+If there is not a `constructor' property in the `prototype` object, a empty constructor is created automatically.
 
-	var MyChildStream = MyStream.extend({
-		write: function (data) {
-			MyChildStream.superclass.write.call(this, data.trim());
+	var util = require('mini-util');
+
+	var MyObject = util.inherit(Object, {
+		hello: function () {
+			console.log('world');
 		}
 	});
 
-	var stream = new MyChildStream();
+	new MyObject().hello();              // => world
 
-	stream.on("data", function(data) {
-		console.log('Received data: "' + data + '"');
+The `super` property is a convenience way to access the properties on the super constructor prototype object.
+
+	var util = require('mini-util');
+
+	var Human = util.inherit(Object, {
+		config: function (name) {
+			this.name = name.trim();
+		},
 	});
 
-	stream.write(" It works!  ");        // => Received data: "It works!"
+	var Player = util.inherit(Human, {
+		config: function (name, id) {
+			Player.super.config.call(this, name);
+			this.id = parseInt(id, 10);
+		}
+	});
+
+	var jim = new Player();
+
+	jim.config(' Jim Green', '10');
+
+	console.log(JSON.stringify(jim));   // => {"name":"Jim Green","id":10}
 
 ### util.mix(targetObject, sourceObject, ..., override)
 
@@ -201,7 +220,7 @@ If one of the source targets is `falsy value`, it will just be omitted.
 
 ### util.merge(sourceObject, ..., override)
 
-Alias to `util.mix({}, sourceObject, ..., override)`.
+Merge all enumerable properties of source objects together. This is just an alias to `util.mix({}, sourceObject, ..., override)`.
 
 ### util.each(object, function, thisObject)
 

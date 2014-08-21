@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert'),
 	should = require('should'),
 	util = require('../index');
@@ -164,28 +166,23 @@ describe('util.inherit', function () {
 		assert.equal(new Child() instanceof Parent, true);
 	});
 
-	it('should use the initializer', function () {
+	it('should use the given constructor', function () {
+		var ctor = function (config) {
+			this.config = config;
+		};
 		var Child = util.inherit(Object, {
-				_initialize: function (config) {
-					this.config = config;
-				}
-			}),
-			config = {};
+			constructor: ctor
+		});
+		var config = {};
 
+		assert.equal(Child, ctor);
 		assert.equal(new Child(config).config, config);
 	});
 
-	it('should provide a superclass property', function () {
+	it('should provide a super property', function () {
 		var Child = util.inherit(Object, {});
 
-		assert.equal(Child.superclass, Object.prototype);
-	});
-
-	it('should provide a extend method', function () {
-		var Child = util.inherit(Object, {}),
-			Grandson = Child.extend({});
-
-		assert.equal(new Grandson() instanceof Child, true);
+		assert.equal(Child.super, Object.prototype);
 	});
 });
 

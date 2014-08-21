@@ -132,11 +132,8 @@ var toArray = exports.toArray = (function () {
  * @return {Function}
  */
 var inherit = exports.inherit = function (parent, prototype) {
-	var ctor = function () {
-			if (isFunction(this._initialize)) {
-				return this._initialize.apply(this, arguments);
-			}
-		};
+	var ctor = prototype.hasOwnProperty('constructor') ?
+			prototype.constructor : function () {};
 
 	prototype.__proto__ = parent.prototype;
 
@@ -146,8 +143,7 @@ var inherit = exports.inherit = function (parent, prototype) {
 	});
 
 	ctor.prototype = prototype;
-	ctor.superclass = parent.prototype;
-	ctor.extend = inherit.bind(null, ctor);
+	ctor.super = parent.prototype;
 
 	return ctor;
 };
