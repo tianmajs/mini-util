@@ -51,6 +51,15 @@ Return true if the given "value" is a `function`, false otherwise.
 
 	util.isFunction(function() {});      // => true
 	util.isFunction({});                 // => false
+	
+### util.isGenerator(value)
+
+Return true if the given "value" is a `generator function`, false otherwise.
+
+	var util = require('mini-util');
+
+	util.isGenerator(function*() {});      // => true
+	util.isGenerator(function() {});                 // => false
 
 ### util.isNull(value)
 
@@ -83,6 +92,15 @@ Return true if the given "value" is a stardard `Object`, false otherwise.
 ### util.isRegExp(value)
 
 Same as the NodeJS native one.
+
+### util.isStream(value)
+
+Return true if the given "value" is a `Stream`, false otherwise.
+
+	var util = require('mini-util');
+
+	util.isStream(new stream.Writable());                   // => true
+	util.isStream(fs.createReadStream(__filename));       // => true
 
 ### util.isString(value)
 
