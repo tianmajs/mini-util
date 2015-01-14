@@ -59,7 +59,7 @@ Return true if the given "value" is a `generator function`, false otherwise.
 	var util = require('mini-util');
 
 	util.isGenerator(function*() {});      // => true
-	util.isGenerator(function() {});                 // => false
+	util.isGenerator(function() {});       // => false
 
 ### util.isNull(value)
 
@@ -99,8 +99,8 @@ Return true if the given "value" is a `Stream`, false otherwise.
 
 	var util = require('mini-util');
 
-	util.isStream(new stream.Writable());                   // => true
-	util.isStream(fs.createReadStream(__filename));       // => true
+	util.isStream(new stream.Writable());               // => true
+	util.isStream(fs.createReadStream(__filename));     // => true
 
 ### util.isString(value)
 
