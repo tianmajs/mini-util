@@ -2,6 +2,8 @@
 
 var nutil = require('util'),
 
+	Stream = require('stream').Stream,
+
 	toString = Object.prototype.toString;
 
 /**
@@ -61,6 +63,15 @@ var isFunction = exports.isFunction = function (value) {
 };
 
 /**
+ * Test whether type of input value is Generator.
+ * @param value {*}
+ * @return {boolean}
+ */
+var isGenerator = exports.isGenerator = function (value) {
+	return (Object(value).constructor || {}).name === 'GeneratorFunction';
+};
+
+/**
  * Test whether type of input value is Null.
  * @param value {*}
  * @return {boolean}
@@ -93,6 +104,15 @@ var isObject = exports.isObject = function (value) {
  * @return {boolean}
  */
 var isRegExp = exports.isRegExp = nutil.isRegExp;
+
+/**
+ * Test whether type of input value is Buffer.
+ * @param value {*}
+ * @return {boolean}
+ */
+var isStream = exports.isStream = function (value) {
+	return value instanceof Stream;
+};
 
 /**
  * Test whether type of input value is String.

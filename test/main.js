@@ -2,12 +2,17 @@
 
 var assert = require('assert'),
 	should = require('should'),
+	stream = require('stream'),
 	util = require('../index');
 
+var rs = new stream.Readable(),
+	ws = new stream.Writable();
+	
 var VARIOUS = [
 	undefined,  null,        false,        0,
 	'',         {},          [],           function () {},
-	/^/,        new Date(),  new Error(),  new Buffer('')
+	/^/,        new Date(),  new Error(),  new Buffer(''),
+	rs,         ws
 ];
 
 describe('util.format', function () {
@@ -32,7 +37,8 @@ describe('util.isBoolean', function () {
 			.should.eql([
 				false,  false,  true,   false,
 				false,  false,  false,  false,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
 			
 		util.isBoolean(new Boolean(false))
@@ -46,7 +52,8 @@ describe('util.isBuffer', function () {
 			.should.eql([
 				false,  false,  false,  false,
 				false,  false,  false,  false,
-				false,  false,  false,  true
+				false,  false,  false,  true,
+				false,  false
 			]);
 	});
 });
@@ -73,8 +80,15 @@ describe('util.isFunction', function () {
 			.should.eql([
 				false,  false,  false,  false,
 				false,  false,  false,  true,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
+	});
+});
+
+describe('util.isGenerator', function () {
+	it('should work', function () {
+		// TODO
 	});
 });
 
@@ -84,7 +98,8 @@ describe('util.isNull', function () {
 			.should.eql([
 				false,  true,   false,  false,
 				false,  false,  false,  false,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
 	});
 });
@@ -95,7 +110,8 @@ describe('util.isNumber', function () {
 			.should.eql([
 				false,  false,  false,  true,
 				false,  false,  false,  false,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
 			
 		util.isNumber(new Number(0))
@@ -109,7 +125,8 @@ describe('util.isObject', function () {
 			.should.eql([
 				false,  false,  false,  false,
 				false,  true,   false,  false,
-				false,  false,  false,  true
+				false,  false,  false,  true,
+				true,   true
 			]);
 	});
 });
@@ -122,13 +139,26 @@ describe('util.isRegExp', function () {
 	});
 });
 
+describe('util.isStream', function () {
+	it('should work', function () {
+		VARIOUS.map(util.isStream)
+			.should.eql([
+				false,  false,  false,  false,
+				false,  false,  false,  false,
+				false,  false,  false,  false,
+				true,   true
+			]);
+	});
+});
+
 describe('util.isString', function () {
 	it('should work', function () {
 		VARIOUS.map(util.isString)
 			.should.eql([
 				false,  false,  false,  false,
 				true,   false,  false,  false,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
 			
 		util.isString(new String(''))
@@ -142,7 +172,8 @@ describe('util.isUndefined', function () {
 			.should.eql([
 				true,   false,  false,  false,
 				false,  false,  false,  false,
-				false,  false,  false,  false
+				false,  false,  false,  false,
+				false,  false
 			]);
 	});
 });
